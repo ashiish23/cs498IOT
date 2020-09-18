@@ -5,3 +5,5 @@
 [Arduino Ethernet library](https://www.arduino.cc/en/Reference/Ethernet)
 
 [MCP CAN library](https://github.com/coryjfowler/MCP_CAN_lib)
+
+[Arduino Modbus library](https://www.arduino.cc/en/ArduinoModbus/ArduinoModbus)
