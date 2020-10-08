@@ -18,13 +18,13 @@ void loop() {
   //Serial.println(logDuration);
   Serial.println(duration);
   Serial.println("microseconds");
-  // 0.344 millimeters per microsecond for there and back again, so divide by 2
+  // 0.344 millimeters per microsecond (mm/ms) for there and back again, so divide by 2
   distance = (0.344 * duration) / 2; 
   //sprintf(logDistance,"%lu mm away",distance);
   //Serial.println(logDistance);
   Serial.println(distance / 10);
   Serial.println("centimeters");
   Serial.println("-----------");
-  delay(3000);            // waits for a second before polling again
+  delay(3000);            // waits for 3 seconds before polling again
   digitalWrite(trigPin, LOW); // back to low
 }
