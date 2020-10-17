@@ -15,6 +15,11 @@ device_end = 29
 
 #Path to the dataset, modify this
 data_path = "data/class_{}.csv"
+# after `aws configure`
+# obtained from `aws iot describe-endpoint --endpoint-type iot:Data-ATS`
+my_iotEndpoint = "a12nbrmsd21s59-ats.iot.us-west-2.amazonaws.com"
+# downloaded from https://www.amazontrust.com/repository/AmazonRootCA1.pem
+rootCApath="./AmazonRootCA1.pem"
 
 #Path to your certificates, modify this
 certificate_formatter = "./certificates/device_{}/device_{}.certificate.pem"
@@ -27,8 +32,8 @@ class MQTTClient:
 		self.device_id = str(device_id)
 		self.state = 0
 		self.client = AWSIoTMQTTClient(self.device_id)
-		self.client.configureEndpoint("a13jml2pwftfof-ats.iot.us-east-1.amazonaws.com", 8883)
-		self.client.configureCredentials("./AmazonRootCA1.pem", key, cert)
+		self.client.configureEndpoint(my_iotEndpoint, 8883)
+		self.client.configureCredentials(rootCApath, key, cert)
 		self.client.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
 		self.client.configureDrainingFrequency(2)  # Draining: 2 Hz
 		self.client.configureConnectDisconnectTimeout(10)  # 10 sec
