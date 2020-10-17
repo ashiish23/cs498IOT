@@ -10,10 +10,9 @@ import string
 thingArn = ''
 thingId = ''
 thingTypeName = 'wearable'
-defaultPolicyName = 'openIOTpolicy'
+defaultPolicyName = 'openIOTpolicy' # 'arn:aws:iam::876612415673:policy/openIOTpolicy'
 defaultGroupName = 'CS498' # 'arn:aws:iot:us-west-2:876612415673:thinggroup/CS498'
 myRoleName = 'IoThing'
-myPolicyARN = 'arn:aws:iam::876612415673:policy/openIOTpolicy'
 
 my_config = Config(
     region_name = 'us-west-2',
@@ -87,5 +86,5 @@ def createCertificate(device_id, thingName):
 if __name__ == "__main__":
 	num_devices = int(sys.argv[1]) if sys.argv[1] else 10
 	for i in range(num_devices):
-		thingName = 'C498_'+''.join([random.choice(string.ascii_letters + string.digits) for n in range(15)])
+		thingName = defaultGroupName+'_'+''.join([random.choice(string.ascii_letters + string.digits) for n in range(15)])
 		createThing(i, thingName)
