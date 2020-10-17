@@ -13,10 +13,12 @@ thingTypeName = 'wearable'
 defaultPolicyName = 'openIOTpolicy' # 'arn:aws:iam::876612415673:policy/openIOTpolicy'
 defaultGroupName = 'CS498' # 'arn:aws:iot:us-west-2:876612415673:thinggroup/CS498'
 myRoleName = 'IoThing'
+myRoleARN = 'arn:aws:iam::876612415673:role/IoThing' # needs write access to CloudWatch logs
+loggingLevel = 'DEBUG' #|'INFO'|'ERROR'|'WARN'|'DISABLED'
 
 my_config = Config(
     region_name = 'us-west-2',
-    signature_version = 'v4',
+    # signature_version = 'v4',
     retries = {
         'max_attempts': 10,
         'mode': 'standard'
@@ -24,6 +26,22 @@ my_config = Config(
 )
 
 thingClient = boto3.client('iot', config=my_config)
+# set logging to debug
+response = thingClient.set_v2_logging_options(
+    roleArn=myRoleARN, # needs access to CloudWatch
+    defaultLogLevel=loggingLevel
+    # disableAllLogs=True|False # defaults to false
+)
+response = thingClient.set_v2_logging_level(
+    logTarget={
+        'targetType': 'THING_GROUP',
+        'targetName': defaultGroupName
+    },
+    logLevel='DEBUG'
+)
+
+ # if policy above does not exist, could create it with boto3 equivalent of
+ # aws iot create-policy --policy-name defaultPolicyName --policy-document "./policy.json"
 ###################################################
 import os
 import sys
