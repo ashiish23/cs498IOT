@@ -12,9 +12,9 @@
 
 5. Get your AWS credentials in order via `aws configure` CLI command. This puts aws_access_key_id and aws_secret_access_key into in `~/.aws/credentials`, which you download from the IAM service section (global creds)
 
-6. Create a policy in the IoT service space and a Thing Group (region specific, such as US-EAST-1)
+6. Create a [policy in the IoT service space](https://docs.aws.amazon.com/iot/latest/developerguide/attach-to-cert.html), a Thing Group (region specific, such as US-EAST-1), and a Thing type (e.g. 'wearable').
 
-7. Update the code in createThing-Cert.py to match the region, policy name, group name, etc.
+7. Update the code in createThing-Cert.py to match the region, policy name, group name, type name, etc.
 
 8. Run the above code with python and a parameter to create a number of devices, such as 30: `python createThing-Cert.py 30`. This should generate 30 device folders under ./certificates with all the associated .pem files. You can also see all these things in your [thing group](https://us-west-2.console.aws.amazon.com/iot/home?region=us-west-2#/thingGroup/CS498)
 
