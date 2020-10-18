@@ -32,7 +32,7 @@ thingType = 'wearable'
 
 #Starting and end index, modify this
 device_st = 0
-device_end = 4
+device_end = 49
 
 # get IoT current logging levels, format them as JSON, and write them to stdout
 # response = awsIoTClient.get_v2_logging_options()
@@ -40,6 +40,8 @@ device_end = 4
 
 #Path to the dataset, modify this
 data_path = "data/class_{}.csv"
+randMsg = ['message a','message b','message c','message d']
+
 # after `aws configure`
 # obtained from `aws iot describe-endpoint --endpoint-type iot:Data-ATS` for Amazon Trust Services Endpoints (preferred)
 my_iotEndpoint = "a12nbrmsd21s59-ats.iot.us-west-2.amazonaws.com"
@@ -91,13 +93,26 @@ class MQTTClient:
 	def publish(self):
 		#TODO4: fill in this function for your publish
 		# QoS: 0 -> <= 1  1 -> >= 1
+		qosLevel = 0
 		self.client.connect()
 		# creates topic string per device, such as `CS498/wearable/0`
-		topicTuple = (thingGroup, thingType, str(self.state))
+		topicTuple = (thingGroup, thingType, self.device_id)
 		topicString = '/'.join(topicTuple)
-		self.client.subscribeAsync(topicString, 1, ackCallback=self.customSubackCallback)
+
+		# TODO: this is not correct! Needs to load values from data/csv. But how?
+		json_data = {}
+		msgIndex = self.state-1 # state is 1 based, msg array is zero based
+		json_data['item'] = randMsg[msgIndex]
+		payload = json.dumps(json_data)
+
+		#optional debug
+		print('Device {} Topic: {}'.format(self.state,topicString))
+		print('Device {} Payload: {}'.format(self.state,payload))
 		
-		self.client.publishAsync(topicString, random.choice(['a','b','c','d']), 1, ackCallback=self.customPubackCallback)
+		# subscribe
+		self.client.subscribeAsync(topicString, qosLevel, ackCallback=self.customSubackCallback)
+		# publish
+		self.client.publishAsync(topicString, payload, qosLevel, ackCallback=self.customPubackCallback)
 
 
 

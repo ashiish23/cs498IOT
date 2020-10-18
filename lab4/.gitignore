@@ -2,3 +2,4 @@ AmazonRootCA1.pem
 env
 data
 certificates
+deploy_package
