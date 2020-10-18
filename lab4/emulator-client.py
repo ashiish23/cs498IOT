@@ -40,7 +40,8 @@ device_end = 49
 
 #Path to the dataset, modify this
 data_path = "data/class_{}.csv"
-randMsg = ['message a','message b','message c','message d']
+# corresponding to 0-5 in class files
+ecgDataLabels = ['N','S','V','F','Q']
 
 # after `aws configure`
 # obtained from `aws iot describe-endpoint --endpoint-type iot:Data-ATS` for Amazon Trust Services Endpoints (preferred)
@@ -95,24 +96,28 @@ class MQTTClient:
 		# QoS: 0 -> <= 1  1 -> >= 1
 		qosLevel = 0
 		self.client.connect()
-		# creates topic string per device, such as `CS498/wearable/0`
+		# creates topic string per device, such as `CS498/wearable/17`
 		topicTuple = (thingGroup, thingType, self.device_id)
 		topicString = '/'.join(topicTuple)
 
-		# TODO: this is not correct! Needs to load values from data/csv. But how?
+		# load a sample values from corresponding data/csv depending on state
 		json_data = {}
-		msgIndex = self.state-1 # state is 1 based, msg array is zero based
-		json_data['item'] = randMsg[msgIndex]
+		json_data['category'] = ecgDataLabels[self.state]
+
+		dataframe = data[self.state]
+		json_data['readings'] = dataframe.sample().to_json()
 		payload = json.dumps(json_data)
 
 		#optional debug
-		print('Device {} Topic: {}'.format(self.state,topicString))
-		print('Device {} Payload: {}'.format(self.state,payload))
-		
+		print('Device {} Topic: {}'.format(self.device_id,topicString))
+		# print('Device {} Payload: {}'.format(self.device_id,payload))
+
 		# subscribe
 		self.client.subscribeAsync(topicString, qosLevel, ackCallback=self.customSubackCallback)
 		# publish
-		self.client.publishAsync(topicString, payload, qosLevel, ackCallback=self.customPubackCallback)
+		if self.state>0:
+			self.client.publishAsync(topicString, payload, qosLevel, ackCallback=self.customPubackCallback)
+
 
 
 
